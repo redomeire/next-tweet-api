@@ -1,23 +1,14 @@
-import { TweetSchema } from "@/models/tweet"
 import { prisma } from "@/prisma/client"
+import getPayloadFromHeader from "@/utils/getPayloadFromHeader"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
     try {
-        const searchParams = request.nextUrl.searchParams
-        const userId = searchParams.get("userId")
-
-        if (userId === null) {
-            return NextResponse.json({
-                error: "user not found"
-            }, {
-                status: 404
-            })
-        }
+        const payload = await getPayloadFromHeader(request.headers)
 
         const tweets = await prisma.tweet.findMany({
             where: {
-                userId: parseInt(userId)
+                userId: payload.id as number
             }
         })
 

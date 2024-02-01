@@ -1,16 +1,18 @@
 import { TweetSchema } from "@/models/tweet"
 import { prisma } from "@/prisma/client";
+import getPayloadFromHeader from "@/utils/getPayloadFromHeader";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
     try {
-        const { userId, title, description } = TweetSchema.parse(await request.formData())
-
+        const { title, description } = TweetSchema.parse(await request.formData())
+        const payload = await getPayloadFromHeader(request.headers)
+        
         const tweet = await prisma.tweet.create({
             data: {
                 title,
                 description,
-                userId
+                userId: payload.id as number
             }
         })
 

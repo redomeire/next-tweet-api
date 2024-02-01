@@ -9,7 +9,6 @@ export async function POST(request: NextRequest) {
         const email = formData.get("email") as string
         const password = formData.get("password") as string
         
-
         const foundUser = await prisma.user.findFirst({
             where: {
                 email
@@ -27,8 +26,8 @@ export async function POST(request: NextRequest) {
         if (!await isPasswordValid(foundUser.password, password))
             return NextResponse.json({ error: "password not valid" }, { status: 400 })
 
-        const token = jwt.sign({ email, password }, process.env.SECRET_KEY || "", {
-            expiresIn: "2 days",
+        const token = jwt.sign({ email, id: foundUser.id }, process.env.SECRET_KEY || "", {
+            expiresIn: "1d",
         })
 
         return NextResponse.json({
