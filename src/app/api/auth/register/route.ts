@@ -32,9 +32,10 @@ export async function POST(request: Request) {
         })
 
         return NextResponse.json({
-            status: 200,
             message: "success create new user",
             data: newUser
+        }, {
+            status: 200
         })
     } catch (error) {
         console.error(error)
