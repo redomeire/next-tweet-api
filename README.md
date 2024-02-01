@@ -26,12 +26,6 @@ npm install
 cp .env.example .env
 ```
 
-#### Copy environment variables
-
-```bash
-cp .env.example .env
-```
-
 adjust your env value. 
 
 ```bash
@@ -66,7 +60,7 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
 ## API Documentation
-Postman 👇 
+Postman 👉 
 [https://documenter.getpostman.com/view/19050804/2s9Yyv9ejr](https://documenter.getpostman.com/view/19050804/2s9Yyv9ejr)
 
 ## Learn More
