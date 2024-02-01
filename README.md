@@ -1,8 +1,53 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# About
+The Next Tweet API offers a range of features, including user authentication and operations related to tweets, such as creating, retrieving, updating, and deleting.
 
-## Getting Started
+## Install Locally
+#### Clone this repository
 
-First, run the development server:
+```bash
+git clone https://github.com/redomeire/next-tweet-api.git
+```
+
+#### Navigate to your project directory
+
+```bash
+cd next-tweet-api
+```
+
+#### Install
+
+```bash
+npm install
+```
+
+#### Copy environment variables
+
+```bash
+cp .env.example .env
+```
+
+#### Copy environment variables
+
+```bash
+cp .env.example .env
+```
+
+adjust your env value. 
+
+```bash
+POSTGRES_PRISMA_URL=postgres://{{ username }}:{{ password }}@{{ dbHost }}:5432/{{ dbName }}
+```
+
+#### Run prisma migration
+
+```bash 
+npx prisma generate
+```
+
+```bash 
+npx prisma db push
+```
+#### Start your local server
 
 ```bash
 npm run dev
@@ -19,6 +64,10 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+
+## API Documentation
+Postman 👇 
+[https://documenter.getpostman.com/view/19050804/2s9Yyv9ejr](https://documenter.getpostman.com/view/19050804/2s9Yyv9ejr)
 
 ## Learn More
 
