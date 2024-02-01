@@ -24,20 +24,20 @@ export async function POST(request: NextRequest) {
             })
         }
 
-        if (!await isPasswordValid(foundUser.password, password)) {
+        if (!await isPasswordValid(foundUser.password, password))
             return NextResponse.json({ error: "password not valid" }, { status: 400 })
-        }
 
         const token = jwt.sign({ email, password }, process.env.SECRET_KEY || "", {
             expiresIn: "2 days",
         })
 
         return NextResponse.json({
-            status: 200,
             message: "success login",
             data: {
                 token
             }
+        }, {
+            status: 200
         })
     } catch (error) {
         return NextResponse.json({

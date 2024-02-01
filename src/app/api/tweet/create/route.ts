@@ -1,10 +1,10 @@
 import { TweetSchema } from "@/models/tweet"
 import { prisma } from "@/prisma/client";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     try {
         const { userId, title, description } = TweetSchema.parse(await request.formData())
-        console.log("title : ", title);
 
         const tweet = await prisma.tweet.create({
             data: {
@@ -14,16 +14,17 @@ export async function POST(request: Request) {
             }
         })
 
-        return Response.json({
-            status: 200,
+        return NextResponse.json({
             message: "success create new tweet",
             data: tweet
+        }, {
+            status: 200
         })
-    } catch (error) {
-        console.error("error : ", error);
-        return Response.json({
-            status: 500,
-            message: "error create new tweet",
+    } catch (error: any) {
+        return NextResponse.json({
+            error: error.message || "error create new tweet",
+        }, {
+            status: 500
         })
     }
 }

@@ -1,7 +1,8 @@
 import { zfd } from "zod-form-data"
 
 const TweetSchema = zfd.formData({
-    userId: zfd.numeric(),
+    id: zfd.text().optional(),
+    userId: zfd.numeric().optional(),
     title: zfd.text(),
     description: zfd.text(),
 })
