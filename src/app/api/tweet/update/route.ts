@@ -7,6 +7,20 @@ export async function PUT(request: NextRequest) {
         const formData = TweetSchema.parse(await request.formData())
         const { title, description, id } = formData
 
+        const foundTweet = await prisma.tweet.findUnique({
+            where: {
+                id
+            }
+        })
+
+        if (foundTweet === null) {
+            return NextResponse.json({
+                error: "tweet not found",
+            }, {
+                status: 404
+            })
+        }
+
         const updatedTweet = await prisma.tweet.update({
             where: {
                 id
@@ -25,8 +39,10 @@ export async function PUT(request: NextRequest) {
         })
 
     } catch (error: any) {
+        console.log("error : ", error);
+        
         return NextResponse.json({
-            message: JSON.parse(error.message) || "error update tweet"
+            message: error.message || "error update tweet"
         }, {
             status: 500
         })
