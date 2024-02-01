@@ -11,6 +11,7 @@
   "dependencies": {
     "@prisma/client": "^5.9.0",
     "argon2": "^0.31.2",
+    "jose": "^5.2.0",
     "jsonwebtoken": "^9.0.2",
     "next": "14.1.0",
     "react": "^18",
