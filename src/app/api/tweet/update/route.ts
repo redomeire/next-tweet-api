@@ -1,11 +1,18 @@
 import { TweetSchema } from "@/models/tweet";
 import { prisma } from "@/prisma/client";
+import { customErrorMap } from "@/utils/error/errorMapper";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(request: NextRequest) {
     try {
-        const formData = TweetSchema.parse(await request.formData())
-        const { title, description, id } = formData
+        const response = TweetSchema.safeParse(await request.json(), {
+            errorMap: customErrorMap
+        })
+
+        if (!response.success)
+            return NextResponse.json({ error: response.error.flatten().fieldErrors }, { status: 400 })
+
+        const { title, description, id } = response.data
 
         const foundTweet = await prisma.tweet.findUnique({
             where: {
@@ -13,13 +20,8 @@ export async function PUT(request: NextRequest) {
             }
         })
 
-        if (foundTweet === null) {
-            return NextResponse.json({
-                error: "tweet not found",
-            }, {
-                status: 404
-            })
-        }
+        if (foundTweet === null)
+            return NextResponse.json({ error: "tweet not found", }, { status: 404 })
 
         const updatedTweet = await prisma.tweet.update({
             where: {
@@ -40,11 +42,6 @@ export async function PUT(request: NextRequest) {
 
     } catch (error: any) {
         console.log("error : ", error);
-        
-        return NextResponse.json({
-            message: error.message || "error update tweet"
-        }, {
-            status: 500
-        })
+        return NextResponse.json({ message: error.message || "error update tweet" }, { status: 500 })
     }
 }

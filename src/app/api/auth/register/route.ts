@@ -1,17 +1,24 @@
+import { UserSchema } from "@/models/user"
 import { prisma } from "@/prisma/client"
+import { customErrorMap } from "@/utils/error/errorMapper"
 import argon from "argon2"
 import { NextResponse } from "next/server"
 
 export async function POST(request: Request) {
     try {
-        const formData = await request.formData()
+        const response = UserSchema.safeParse(await request.json(), {
+            errorMap: customErrorMap
+        })
 
-        const email = formData.get("email") as string
-        const password = formData.get("password") as string
+        if (!response.success) {
+            return NextResponse.json({ error: response.error.flatten().fieldErrors }, {
+                status: 400
+            })
+        }
 
         const foundUser = await prisma.user.findFirst({
             where: {
-                email
+                email: response.data.email
             }
         })
 
@@ -22,11 +29,11 @@ export async function POST(request: Request) {
             }, { status: 400 })
         }
 
-        const hashedPassword = await argon.hash(password)
+        const hashedPassword = await argon.hash(response.data.password)
 
         const newUser = await prisma.user.create({
             data: {
-                email,
+                email: response.data.email,
                 password: hashedPassword
             }
         })
@@ -37,11 +44,8 @@ export async function POST(request: Request) {
         }, {
             status: 200
         })
-    } catch (error) {
+    } catch (error: any) {
         console.error(error)
-        return NextResponse.json({
-            status: 500,
-            message: "error occured"
-        }, { status: 500 })
+        return NextResponse.json({ error: error.message }, { status: 500 })
     }
 }

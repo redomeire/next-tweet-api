@@ -1,17 +1,24 @@
+import { UserSchema } from "@/models/user"
 import { prisma } from "@/prisma/client"
+import { customErrorMap } from "@/utils/error/errorMapper"
 import argon from "argon2"
-import jwt from "jsonwebtoken"
 import { NextRequest, NextResponse } from "next/server"
+import * as jose from "jose"
 
 export async function POST(request: NextRequest) {
     try {
-        const formData = await request.formData()
-        const email = formData.get("email") as string
-        const password = formData.get("password") as string
-        
+        const response = UserSchema.safeParse(await request.json(), {
+            errorMap: customErrorMap
+        })
+
+        if (!response.success)
+            return NextResponse.json({ error: response.error.flatten().fieldErrors }, {
+                status: 400
+            })
+
         const foundUser = await prisma.user.findFirst({
             where: {
-                email
+                email: response.data.email
             }
         })
 
@@ -23,27 +30,22 @@ export async function POST(request: NextRequest) {
             })
         }
 
-        if (!await isPasswordValid(foundUser.password, password))
+        if (!await isPasswordValid(foundUser.password, response.data.password))
             return NextResponse.json({ error: "password not valid" }, { status: 400 })
 
-        const token = jwt.sign({ email, id: foundUser.id }, process.env.SECRET_KEY || "", {
-            expiresIn: "1d",
-        })
+        const secret = new TextEncoder().encode(process.env.SECRET_KEY || "")
+
+        const token = await new jose.SignJWT({ email: response.data.email, id: foundUser.id })
+        .setProtectedHeader({ alg: "HS256" })
+        .setExpirationTime("1d")
+        .sign(secret)
 
         return NextResponse.json({
             message: "success login",
-            data: {
-                token
-            }
-        }, {
-            status: 200
-        })
+            data: { token }
+        }, { status: 200 })
     } catch (error) {
-        return NextResponse.json({
-            error,
-        }, {
-            status: 500
-        })
+        return NextResponse.json({ error }, { status: 500 })
     }
 }
 

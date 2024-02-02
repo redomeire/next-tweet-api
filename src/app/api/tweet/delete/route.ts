@@ -1,15 +1,21 @@
 import { prisma } from "@/prisma/client";
+import { customErrorMap } from "@/utils/error/errorMapper";
 import { NextRequest, NextResponse } from "next/server";
-import { zfd } from "zod-form-data";
+import { z } from "zod";
 
 export async function DELETE(request: NextRequest) {
     try {
-        const schema = zfd.formData({
-            id: zfd.text()
+        const schema = z.object({
+            id: z.string().min(1)
         })
-        const formData = schema.parse(await request.formData())
+        const response = schema.safeParse(await request.json(), {
+            errorMap: customErrorMap
+        })
 
-        const { id } = formData
+        if(!response.success)
+            return NextResponse.json({ error: response.error.flatten().fieldErrors }, { status: 400 })
+
+        const { id } = response.data
 
         const foundTweet = await prisma.tweet.delete({
             where: {
@@ -17,13 +23,8 @@ export async function DELETE(request: NextRequest) {
             }
         })
 
-        if (foundTweet === null) {
-            return NextResponse.json({
-                error: "tweet not found",
-            }, {
-                status: 404
-            })
-        }
+        if (foundTweet === null)
+            return NextResponse.json({ error: "tweet not found", }, { status: 404 })
 
         return NextResponse.json({
             message: "success delete tweet",
@@ -46,10 +47,6 @@ export async function DELETE(request: NextRequest) {
                 break
         }
 
-        return NextResponse.json({
-            error: errorMessage
-        }, {
-            status: errorStatus
-        })
+        return NextResponse.json({ error: errorMessage }, { status: errorStatus })
     }
 }
