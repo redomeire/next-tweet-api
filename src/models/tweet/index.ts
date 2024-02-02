@@ -1,10 +1,10 @@
-import { zfd } from "zod-form-data"
+import { z } from "zod"
 
-const TweetSchema = zfd.formData({
-    id: zfd.text().optional(),
-    userId: zfd.numeric().optional(),
-    title: zfd.text(),
-    description: zfd.text(),
+const TweetSchema = z.object({
+    id: z.string().optional(),
+    userId: z.number().optional(),
+    title: z.string().min(3),
+    description: z.string().min(5),
 })
 
 export { TweetSchema }
