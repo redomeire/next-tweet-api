@@ -17,6 +17,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
             }
         })
 
+        if (foundTweet === null)
+            return NextResponse.json({ error: "tweet not found" }, { status: 404 })
+
         return NextResponse.json({
             message: "success get tweet",
             data: foundTweet
