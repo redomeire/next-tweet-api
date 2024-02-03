@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
         }
 
         if (!await isPasswordValid(foundUser.password, response.data.password))
-            return NextResponse.json({ error: "password not valid" }, { status: 400 })
+            return NextResponse.json({ error: "wrong password" }, { status: 400 })
 
         const secret = new TextEncoder().encode(process.env.SECRET_KEY || "")
 
