@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/client";
 import { customErrorMap } from "@/utils/error/errorMapper";
+import getPayloadFromHeader from "@/utils/getPayloadFromHeader";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -12,6 +13,8 @@ export async function DELETE(request: NextRequest) {
             errorMap: customErrorMap
         })
 
+        const payload = await getPayloadFromHeader(request.headers)
+
         if(!response.success)
             return NextResponse.json({ error: response.error.flatten().fieldErrors }, { status: 400 })
 
@@ -19,7 +22,8 @@ export async function DELETE(request: NextRequest) {
 
         const foundTweet = await prisma.tweet.delete({
             where: {
-                id
+                id,
+                userId: payload.id as number
             }
         })
 
