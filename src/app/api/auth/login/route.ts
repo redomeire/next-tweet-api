@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
         if (!await isPasswordValid(foundUser.password, response.data.password))
             return NextResponse.json({ error: "wrong password" }, { status: 400 })
 
-        const secret = new TextEncoder().encode(process.env.SECRET_KEY || "")
+        const secret = new TextEncoder().encode(process.env.SECRET_KEY ?? "")
 
         const token = await new jose.SignJWT({ email: response.data.email, id: foundUser.id })
         .setProtectedHeader({ alg: "HS256" })
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({
             message: "success login",
-            data: { token }
+            data: { token, userId: foundUser.id }
         }, { status: 200 })
     } catch (error) {
         return NextResponse.json({ error }, { status: 500 })
