@@ -1,5 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server'
 import * as jose from "jose"
+import { getCorsHeaders } from './handler';
 
 const corsOptions: {
   allowedMethods: string[];
@@ -15,6 +16,17 @@ const corsOptions: {
   exposedHeaders: (process.env?.EXPOSED_HEADERS ?? "").split(","),
   maxAge: process.env?.MAX_AGE && parseInt(process.env?.MAX_AGE) || undefined, // 60 * 60 * 24 * 30, // 30 days
   credentials: process.env?.CREDENTIALS == "true",
+};
+
+export const OPTIONS = async (request: NextRequest) => {
+  // Return Response
+  return NextResponse.json(
+      {},
+      {
+          status: 200,
+          headers: getCorsHeaders(request.headers.get("origin") ?? ""),
+      }
+  );
 };
 
 export async function middleware(request: NextRequest) {
