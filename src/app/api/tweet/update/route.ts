@@ -17,6 +17,11 @@ export const OPTIONS = async (request: NextRequest) => {
 };
 
 export async function PUT(request: NextRequest) {
+    const authorization = request.headers.get("Authorization")
+
+    if(authorization === null) 
+        return NextResponse.json({ error: "Unauthorized operation" }, { status: 401 })
+
     try {
         const response = TweetSchema.safeParse(await request.json(), {
             errorMap: customErrorMap

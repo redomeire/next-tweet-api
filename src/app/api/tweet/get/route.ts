@@ -15,6 +15,11 @@ export const OPTIONS = async (request: NextRequest) => {
 };
 
 export async function GET(request: NextRequest) {
+    const authorization = request.headers.get("Authorization")
+
+    if(authorization === null) 
+        return NextResponse.json({ error: "Unauthorized operation" }, { status: 401 })
+
     try {
         const payload = await getPayloadFromHeader(request.headers)
 

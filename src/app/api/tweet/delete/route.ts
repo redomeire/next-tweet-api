@@ -17,6 +17,11 @@ export const OPTIONS = async (request: NextRequest) => {
 };
 
 export async function DELETE(request: NextRequest) {
+    const authorization = request.headers.get("Authorization")
+
+    if(authorization === null) 
+        return NextResponse.json({ error: "Unauthorized operation" }, { status: 401 })
+
     try {
         const schema = z.object({
             id: z.string().min(1)
