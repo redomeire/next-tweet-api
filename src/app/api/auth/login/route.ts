@@ -4,6 +4,18 @@ import { customErrorMap } from "@/utils/error/errorMapper"
 import argon from "argon2"
 import { NextRequest, NextResponse } from "next/server"
 import * as jose from "jose"
+import { getCorsHeaders } from "@/handler"
+
+export const OPTIONS = async (request: NextRequest) => {
+    // Return Response
+    return NextResponse.json(
+        {},
+        {
+            status: 200,
+            headers: getCorsHeaders(request.headers.get("origin") ?? ""),
+        }
+    );
+};
 
 export async function POST(request: NextRequest) {
     try {
