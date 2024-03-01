@@ -2,16 +2,6 @@ import { NextResponse, NextRequest } from 'next/server'
 import * as jose from "jose"
 
 export async function middleware(request: NextRequest) {
-  const res = NextResponse.next()
-  // add the CORS headers to the response
-  res.headers.append('Access-Control-Allow-Credentials', "true")
-  res.headers.append('Access-Control-Allow-Origin', '*') // replace this your actual origin
-  res.headers.append('Access-Control-Allow-Methods', 'GET,DELETE,PATCH,POST,PUT')
-  res.headers.append(
-      'Access-Control-Allow-Headers',
-      'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  )
-
   if(request.nextUrl.pathname.startsWith('/api/tweet')) {
     const authorization = request.headers.get("Authorization")
   
@@ -38,7 +28,8 @@ export async function middleware(request: NextRequest) {
       })
     }
   }
-   return res
+
+  return NextResponse.next()
 }
 
 export const config = {
