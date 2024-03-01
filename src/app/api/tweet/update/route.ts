@@ -1,8 +1,20 @@
+import { getCorsHeaders } from "@/handler";
 import { TweetSchema } from "@/models/tweet";
 import { prisma } from "@/prisma/client";
 import { customErrorMap } from "@/utils/error/errorMapper";
 import getPayloadFromHeader from "@/utils/getPayloadFromHeader";
 import { NextRequest, NextResponse } from "next/server";
+
+export const OPTIONS = async (request: NextRequest) => {
+    // Return Response
+    return NextResponse.json(
+        {},
+        {
+            status: 200,
+            headers: getCorsHeaders(request.headers.get("origin") ?? ""),
+        }
+    );
+};
 
 export async function PUT(request: NextRequest) {
     try {

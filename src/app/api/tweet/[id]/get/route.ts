@@ -1,6 +1,18 @@
+import { getCorsHeaders } from "@/handler";
 import { prisma } from "@/prisma/client";
 import getPayloadFromHeader from "@/utils/getPayloadFromHeader";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
+export const OPTIONS = async (request: NextRequest) => {
+    // Return Response
+    return NextResponse.json(
+        {},
+        {
+            status: 200,
+            headers: getCorsHeaders(request.headers.get("origin") ?? ""),
+        }
+    );
+};
 
 export async function GET(request: Request, { params }: { params: { id: string } }) {
     try {
