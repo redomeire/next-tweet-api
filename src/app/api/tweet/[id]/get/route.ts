@@ -14,14 +14,14 @@ export const OPTIONS = async (request: NextRequest) => {
     );
 };
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
     const authorization = request.headers.get("Authorization")
 
     if(authorization === null) 
-            return NextResponse.json({ error: "Unauthorized operation" }, { status: 401 })
-        
+        return NextResponse.json({ error: "Unauthorized operation" }, { status: 401 })
+
     try {
-        const { id } = params
+        const id = params.id
 
         if (id === null) 
             return NextResponse.json({ error: "id not provided" }, { status: 400 })
