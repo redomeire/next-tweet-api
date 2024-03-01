@@ -18,7 +18,7 @@ const nextConfig = {
       return [
         {
           source: '/api/:path*',
-          destination: 'https://next-tweet-api.vercel.app/:path*'
+          destination: 'https://next-tweet-api.vercel.app/api/:path*'
         }
       ]
     }
