@@ -1,6 +1,9 @@
 # About
 The Next Tweet API offers a range of features, including user authentication and operations related to tweets, such as creating, retrieving, updating, and deleting.
 
+## Important note
+This is not recommended at all! Since NextJs intended for frontend, it supports very minimal setup for backend utilization. Please use appropriate backend framework instead.
+
 ## Install Locally
 #### Clone this repository
 
